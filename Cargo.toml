@@ -1,0 +1,11 @@
+[package]
+name = "octarine-fork-check"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.91"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[dev-dependencies]
+ed25519-dalek = "2"
+kanatoko = { version = "=30.0.0-rc.1", features = ["capture"] }

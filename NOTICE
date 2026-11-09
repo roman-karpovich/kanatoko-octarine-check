@@ -1,0 +1,17 @@
+octarine-fork-check
+Copyright 2026 Roman Karpovich
+
+The code in this repository is licensed under the MIT License or the Apache
+License, Version 2.0, at your option. See LICENSE-MIT and LICENSE-APACHE.
+
+This repository contains no source code or compiled WASM from Octarine
+(https://github.com/mystic-finance/Stellar-RFQ). The test builds that WASM
+from upstream commit 9afddd0acf08df16aaf404e35c79b4dc5bea97ce on the user's
+machine. The upstream README and Cargo manifests declare Apache-2.0.
+
+upstream-deps.lock lists the crates.io package versions and checksums that
+were resolved from the upstream manifests.
+
+fixtures/testnet-blend.json is captured public Stellar testnet state. It
+includes contract WASM deployed by third parties, namely the testnet Blend v2
+pool and its price oracle. Those programs remain under their authors' terms.

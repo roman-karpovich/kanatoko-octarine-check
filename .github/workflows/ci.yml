@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "1"
+  RUST_TOOLCHAIN: "1.91.0"
+  WASM_TOOLCHAIN: "1.92.0"
+  STELLAR_CLI: "27.0.0"
+  UPSTREAM_COMMIT: 9afddd0acf08df16aaf404e35c79b4dc5bea97ce
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check out the pinned upstream commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: mystic-finance/Stellar-RFQ
+          ref: ${{ env.UPSTREAM_COMMIT }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install "${RUST_TOOLCHAIN}" \
+            --profile minimal \
+            --component clippy \
+            --component rustfmt
+          rustup toolchain install "${WASM_TOOLCHAIN}" \
+            --profile minimal \
+            --target wasm32v1-none
+          rustup default "${RUST_TOOLCHAIN}"
+
+      - name: Install stellar-cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libdbus-1-dev libudev-dev pkg-config
+          cargo +"${WASM_TOOLCHAIN}" install --locked stellar-cli --version "${STELLAR_CLI}"
+
+      - name: Build the upstream WASM and check its SHA-256
+        run: ./build-upstream.sh upstream
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Replay the capture offline
+        run: cargo test --locked --offline
