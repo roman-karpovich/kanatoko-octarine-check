@@ -64,12 +64,18 @@ The Octarine WASM is not committed. `build-upstream.sh` builds it from the check
 with `stellar contract build`, as the upstream Makefile does. Upstream does not commit
 a `Cargo.lock`, so the script copies `upstream-deps.lock` into the checkout as its
 `Cargo.lock`. That file holds the crates.io versions used here, and cargo adds the
-workspace's own crates to it. The script then checks the result against `wasm.sha256`:
+workspace's own crates to it. The script then checks the result against the hashes
+recorded for the host OS, `wasm.macos.sha256` or `wasm.linux.sha256`:
 
-| File | SHA-256 |
-| --- | --- |
-| `rfq.wasm` | `c2c4a97d5c4166fe3b2d739703de94da41e28d890fa09456cc43ab2b73201d72` |
-| `feed_oracle.wasm` | `eabb698b03fee3bd8cae6cba8648472a70640ab761cdc24468f8ecf470498060` |
+| File | macOS (arm64) | Linux (x86_64, GitHub Actions) |
+| --- | --- | --- |
+| `rfq.wasm` | `c2c4a97d5c4166fe3b2d739703de94da41e28d890fa09456cc43ab2b73201d72` | `39ca1de44160396ffe1df35cc8079507e5c2d3b53f6bbc206a9b48fe37636f85` |
+| `feed_oracle.wasm` | `eabb698b03fee3bd8cae6cba8648472a70640ab761cdc24468f8ecf470498060` | same |
+
+The two `rfq.wasm` builds have the same size and differ only in the order of four
+functions, with the call indices renumbered to match. Every function body and every
+other section, including the contract spec and metadata, is the same. Other hosts may
+give yet another order.
 
 ## Re-capture
 
