@@ -12,6 +12,8 @@ env:
   RUST_BACKTRACE: "1"
   RUST_TOOLCHAIN: "1.91.0"
   WASM_TOOLCHAIN: "1.92.0"
+  # stellar-cli 27.0.0 needs Rust 1.93.0 or newer to compile itself.
+  CLI_TOOLCHAIN: "1.93.0"
   STELLAR_CLI: "27.0.0"
   UPSTREAM_COMMIT: 9afddd0acf08df16aaf404e35c79b4dc5bea97ce
 
@@ -40,13 +42,14 @@ jobs:
           rustup toolchain install "${WASM_TOOLCHAIN}" \
             --profile minimal \
             --target wasm32v1-none
+          rustup toolchain install "${CLI_TOOLCHAIN}" --profile minimal
           rustup default "${RUST_TOOLCHAIN}"
 
       - name: Install stellar-cli
         run: |
           sudo apt-get update
           sudo apt-get install -y libdbus-1-dev libudev-dev pkg-config
-          cargo +"${WASM_TOOLCHAIN}" install --locked stellar-cli --version "${STELLAR_CLI}"
+          cargo +"${CLI_TOOLCHAIN}" install --locked stellar-cli --version "${STELLAR_CLI}"
 
       - name: Build the upstream WASM and check its SHA-256
         run: ./build-upstream.sh upstream

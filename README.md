@@ -47,7 +47,7 @@ No captured storage is overridden.
 
 Requirements: Rust 1.91.0 for the test, Rust 1.92.0 with the `wasm32v1-none` target
 for the contracts, and `stellar-cli` 27.0.0. The CLI refuses Rust 1.91.0 for contract
-builds.
+builds, and installing it with `cargo install` needs Rust 1.93.0 or newer.
 
 ```sh
 git clone https://github.com/mystic-finance/Stellar-RFQ upstream
